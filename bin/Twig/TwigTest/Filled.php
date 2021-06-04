@@ -16,7 +16,8 @@ class Filled extends DefinedTest
 
 		if (isset($chain))
 		{
-			$compiler->raw('(!empty($context["' . implode('"]["', $chain) . '"]))');
+			$var = '$context["' . implode('"]["', $chain) . '"]';
+			$compiler->raw('(!empty(' . $var . ') || isset(' . $var . ') && ' . $var . ' === "0")');
 		}
 		else
 		{
