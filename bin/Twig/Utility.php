@@ -10,6 +10,49 @@ use \Twig\Node\Expression\NameExpression;
 
 class Utility
 {
+	/**
+	* @param AbstractExpression $expression
+	* @return bool
+	*/
+	static private function ValidateChainLink(AbstractExpression $expression)
+	{
+		if (!($expression instanceof GetAttrExpression))
+		{
+			return false;
+		}
+
+		$node = $expression->getNode('node');
+
+		if (
+			!($node instanceof NameExpression)
+			&&
+			!($node instanceof GetAttrExpression)
+		)
+		{
+			return false;
+		}
+
+		$attribute = $expression->getNode('attribute');
+
+		if (!($attribute instanceof ConstantExpression))
+		{
+			return false;
+		}
+
+		$arguments = $expression->getNode('arguments');
+
+		if (!($arguments instanceof ArrayExpression))
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	* @param AbstractExpression $expression
+	* @return array|null
+	*/
 	static public function FlattenChain(AbstractExpression $expression)
 	{
 		if ($expression instanceof NameExpression)
@@ -23,41 +66,27 @@ class Utility
 
 			do
 			{
-				$node = $expression->getNode('node');
-				$attribute = $expression->getNode('attribute');
-				$arguments = $expression->getNode('arguments');
-
-				if (
-					(
-						$node instanceof NameExpression
-						||
-						$node instanceof GetAttrExpression
-					)
-					&&
-					$attribute instanceof ConstantExpression
-					&&
-					$arguments instanceof ArrayExpression
-				)
-				{
-					$chain[] = $attribute->getAttribute('value');
-
-					if ($node instanceof NameExpression)
-					{
-						$chain[] = $node->getAttribute('name');
-					}
-
-					$expression = $node;
-				}
-				else
+				if (!self::ValidateChainLink($expression))
 				{
 					return null;
 				}
+
+				$node = $expression->getNode('node');
+				$attribute = $expression->getNode('attribute');
+
+				$chain[] = $attribute->getAttribute('value');
+
+				if ($node instanceof NameExpression)
+				{
+					$chain[] = $node->getAttribute('name');
+					$chain = array_reverse($chain);
+
+					return $chain;
+				}
+
+				$expression = $node;
 			}
 			while ($expression instanceof GetAttrExpression);
-
-			$chain = array_reverse($chain);
-
-			return $chain;
 		}
 
 		return null;
