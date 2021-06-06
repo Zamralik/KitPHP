@@ -235,16 +235,6 @@ final class Connection
 	}
 
 	/**
-	* @param array $type_map
-	* @param array $raw_data
-	* @return array
-	*/
-	public function mapping($type_map, $raw_data)
-	{
-		return Utility::Mapping($type_map, $raw_data);
-	}
-
-	/**
 	* @param string $path
 	*/
 	public function executeFile(string $path)
