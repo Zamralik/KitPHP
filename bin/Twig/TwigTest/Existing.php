@@ -18,6 +18,7 @@ class Existing extends DefinedTest
 		{
 			$var = '$context["' . implode('"]["', $chain) . '"]';
 			$compiler->raw('(isset(' . $var . '))');
+			$compiler->raw("(isset({$var}))");
 		}
 		else
 		{
