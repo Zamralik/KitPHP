@@ -266,6 +266,21 @@ class Url
 	}
 
 	/**
+	* @return array
+	*/
+	public function getParameters()
+	{
+		if (empty($this->query))
+		{
+			return [];
+		}
+
+		parse_str($this->query, $parameters);
+
+		return $parameters;
+	}
+
+	/**
 	* @return string|null
 	*/
 	public function getFragment()
@@ -378,11 +393,19 @@ class Url
 	}
 
 	/**
-	* @param string|array $query
+	* @param string $query
 	*/
-	public function setQuery($query)
+	public function setQuery(string $query)
 	{
-		$this->query = is_array($query) ? http_build_query($hashmap) : $query;
+		$this->query = $query;
+	}
+
+	/**
+	* @param array $parameters
+	*/
+	public function setParameters(array $parameters)
+	{
+		$this->query = http_build_query($parameters);
 	}
 
 	/**
