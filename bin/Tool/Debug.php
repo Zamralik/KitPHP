@@ -347,6 +347,19 @@ final class Debug
 
 	/**
 	* @param Throwable $error
+	* @return string
+	*/
+	static public function SerializeError(Throwable $error)
+	{
+		$full_class = get_class($error);
+		$message = $error->getMessage();
+		$trace = self::GetPrintableTrace($error);
+
+		return "Throw {$full_class}\nMessage: {$message}\nTrace:\n{$trace}";
+	}
+
+	/**
+	* @param Throwable $error
 	* @param bool $merge
 	* @return string|array
 	*/
