@@ -330,13 +330,14 @@ final class Debug
 		{
 			if (isset($row['file'], $row['line']))
 			{
+				$file = str_replace('\\', '/', $file);
+
 				if (isset($base_path))
 				{
 					$file = str_replace($base_path, '.', $row['file']);
 				}
 
-				$file = str_replace('\\', '/', $file);
-				$trace['file'] = $file;
+				$row['file'] = $file;
 
 				$formatted_trace[] = $row;
 			}
